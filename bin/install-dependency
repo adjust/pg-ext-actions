@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+HOST="${HOST:-github.com}"
+
+if [[ -n ${AUTH_TOKEN} ]]; then
+    prefix="${AUTH_TOKEN}:x-oauth-basic@"
+fi
+
+for repo in $@
+do
+    echo "Cloning and building https://${HOST}/${repo}.git..."
+
+    # clone repo
+    directory=$(echo ${repo} | tr / _)
+    git clone https://${prefix}${HOST}/${repo}.git ${directory}
+
+    # build and install extension
+    make -C ${directory} CFLAGS="${CFLAGS}"
+    sudo make -C ${directory} install
+done

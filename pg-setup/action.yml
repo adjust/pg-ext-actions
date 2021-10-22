@@ -1,0 +1,16 @@
+name: 'pg-setup'
+description: 'Install PostgreSQL'
+inputs:
+  version:
+    description: 'PostgreSQL major version number'
+    required: true
+  install-contrib:
+    description: 'Install PostgreSQL contrib package (true/false)'
+    default: 'false'
+runs:
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path }}/../bin/pg-setup ${{ inputs.version }}
+      shell: bash
+      env:
+        CONTRIB: ${{ inputs.install-contrib }}

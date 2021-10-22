@@ -1,0 +1,11 @@
+name: 'build-check'
+description: 'Build & install the extension and run regression tests'
+inputs:
+  working-directory:
+    description: 'Working directory'
+runs:
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path }}/../bin/build-check
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}

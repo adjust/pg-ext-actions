@@ -1,0 +1,19 @@
+name: 'install-dependency'
+description: 'Install PostgreSQL extension'
+inputs:
+  repository:
+    description: 'Space separated list of dependencies'
+    required: true
+  host:
+    description: 'Git platform'
+    default: 'github.com'
+  auth-token:
+    description: 'Authentication token'
+runs:
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path }}/../bin/install-dependency ${{ inputs.repository }}
+      shell: bash
+      env:
+        AUTH_TOKEN: ${{ inputs.auth-token }}
+        HOST: ${{ inputs.host }}

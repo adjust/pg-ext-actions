@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -x
+
+# build and install extension
+make CFLAGS="${CFLAGS}"
+sudo make install
+
+# run regression tests
+status=0
+make installcheck PGUSER=postgres || status=$?
+
+# show diff if needed
+if [[ ${status} -ne 0 ]] && [[ -f regression.diffs ]]; then
+    cat regression.diffs;
+fi
+
+exit ${status}
