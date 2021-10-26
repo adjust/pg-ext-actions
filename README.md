@@ -25,6 +25,13 @@ Build and install extension and run regression tests. In case of test failure th
 Arguments:
 * `working-directory`: directory to run script in, optional; by default runs script in current directory.
 
+### `update-check`
+
+Run update script from the version specified in control file in the main branch (e.g. `master` or `main`) to the current version.
+Arguments:
+* `main-branch`: main branch to update from, optional; when not specified the default branch is used;
+* `working-directory`: directory to run script in, optional; by default runs script in current directory.
+
 ## Example for Github Actions
 
 ```yaml
