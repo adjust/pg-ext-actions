@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -e
+
+control_file=`ls *.control`
+ext_name=`echo ${control_file} | cut -d "." -f 1`
+
+# Get main branch name
+main_branch=${EXT_BRANCH:-`git remote show origin | awk '/HEAD branch/ {print $NF}'`}
+
+# Fetch main branch in order to get access to its control file
+git fetch origin $main_branch --quiet
+
+# Get extension version number from the main and the current branches
+main_version=`git show origin/$main_branch:$control_file | grep ^\s\*default_version | sed "s/.*'\(.*\)'.*/\1/g"`
+current_version=`cat $control_file | grep ^\s\*default_version | sed "s/.*'\(.*\)'.*/\1/g"`
+
+echo "Current version: ${current_version}"
+echo "Main branch version: ${main_version}"
+
+if [[ $main_version == $current_version ]]; then
+    echo 'Versions are identical, skipping update check...'
+    exit 0
+fi
+
+# Try upgrading extension from the main version
+psql postgres -U postgres -t -q -1 -c "CREATE EXTENSION ${ext_name} VERSION '${main_version}'" \
+                                   -c "ALTER EXTENSION ${ext_name} UPDATE TO '${current_version}'" \
+                                   -c "DROP EXTENSION ${ext_name}"
